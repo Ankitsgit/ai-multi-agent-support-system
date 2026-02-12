@@ -1,0 +1,92 @@
+// ==============================================
+// PRISMA SCHEMA - PostgreSQL + Prisma ORM
+// ==============================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---- CONVERSATIONS ----
+model Conversation {
+  id        String    @id @default(uuid())
+  userId    String
+  title     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  messages  Message[]
+
+  @@index([userId])
+}
+
+// ---- MESSAGES ----
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String       // 'user' | 'assistant'
+  content        String       @db.Text
+  agentType      String?      // 'support' | 'order' | 'billing'
+  routingReason  String?
+  toolsUsed      Json?        // PostgreSQL native JSON
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId])
+}
+
+// ---- ORDERS ----
+model Order {
+  id                String    @id @default(uuid())
+  orderNumber       String    @unique
+  userId            String
+  status            String    // 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
+  trackingNumber    String?   @unique
+  totalAmount       Float
+  currency          String    @default("USD")
+  items             Json      // PostgreSQL native JSON array
+  shippingAddress   String?
+  estimatedDelivery DateTime?
+  deliveredAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([orderNumber])
+}
+
+// ---- PAYMENTS ----
+model Payment {
+  id            String   @id @default(uuid())
+  paymentNumber String   @unique
+  userId        String
+  orderId       String?
+  amount        Float
+  currency      String   @default("USD")
+  status        String   // 'completed' | 'pending' | 'refunded' | 'failed'
+  method        String   // 'credit_card' | 'paypal' | 'bank_transfer'
+  invoiceUrl    String?
+  refundStatus  String   @default("none")
+  refundAmount  Float?
+  refundReason  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId])
+  @@index([orderId])
+}
+
+// ---- FAQs ----
+model FAQ {
+  id        String   @id @default(uuid())
+  category  String
+  question  String
+  answer    String   @db.Text
+  tags      String[] // PostgreSQL native string array
+  createdAt DateTime @default(now())
+
+  @@index([category])
+}
