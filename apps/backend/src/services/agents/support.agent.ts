@@ -27,7 +27,7 @@ export async function handleSupportQuery(
   conversationId: string
 ) {
   const result = await generateText({
-    model: google('gemini-1.5-pro'),
+    model: google('gemini-1.5-flash-latest'),
     system: SUPPORT_SYSTEM_PROMPT + `\n\nConversation ID: ${conversationId}`,
     messages: [
       ...conversationHistory.map((m) => ({
@@ -54,7 +54,7 @@ export function streamSupportQuery(
   conversationId: string
 ) {
   return streamText({
-    model: google('gemini-1.5-pro'),
+    model: google('gemini-1.5-flash-latest'),
     system: SUPPORT_SYSTEM_PROMPT + `\n\nConversation ID: ${conversationId}`,
     messages: [
       ...conversationHistory.map((m) => ({

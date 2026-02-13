@@ -43,7 +43,7 @@ export async function routeQuery(
       : userMessage;
 
     const { text } = await generateText({
-      model: google('gemini-1.5-flash'),  // Fast + cheap for routing
+      model: google('gemini-1.5-flash-latest'),  // Fast + cheap for routing
       system: ROUTING_SYSTEM_PROMPT,
       prompt: contextualMessage,
       maxTokens: 150,

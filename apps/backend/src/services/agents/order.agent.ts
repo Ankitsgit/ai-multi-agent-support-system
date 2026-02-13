@@ -26,7 +26,7 @@ export async function handleOrderQuery(
   userId: string
 ) {
   const result = await generateText({
-    model: google('gemini-1.5-pro'),
+    model: google('gemini-1.5-flash-latest'),
     system: ORDER_SYSTEM_PROMPT + `\n\nCurrent user ID: ${userId}`,
     messages: [
       ...conversationHistory.map((m) => ({
@@ -53,7 +53,7 @@ export function streamOrderQuery(
   userId: string
 ) {
   return streamText({
-    model: google('gemini-1.5-pro'),
+    model: google('gemini-1.5-flash-latest'),
     system: ORDER_SYSTEM_PROMPT + `\n\nCurrent user ID: ${userId}`,
     messages: [
       ...conversationHistory.map((m) => ({
