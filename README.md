@@ -102,6 +102,8 @@ npm install
 cd apps/backend
 npx prisma migrate dev --name init
 
+# if above not work 
+$env:DATABASE_URL="postgresql://postgres:78690@127.0.0.1:5432/ai_support_db?schema=public"; npx prisma migrate dev --name init
 # 3. Seed demo data (orders, payments, FAQs)
 npm run db:seed
 
